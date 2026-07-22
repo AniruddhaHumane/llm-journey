@@ -34,7 +34,7 @@ class AttnHead:
         Q = X @ self.Wq
         K = X @ self.Wk
         V = X @ self.Wv
-        proj = Q @ K.T / np.sqrt(d_head)
+        proj = Q @ K.T / np.sqrt(self.d_head)
         # print(f"proj shape: {proj.shape}")
         # print(proj)
         mask = np.triu(np.ones_like(proj, bool), k=1)
