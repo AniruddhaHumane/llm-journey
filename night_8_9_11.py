@@ -2,6 +2,7 @@ from torch_transformer import GPT
 from transformers import AutoTokenizer
 import torch
 import torch.nn.functional as F
+import torch.nn as nn
 from torch.optim import SGD
 from pathlib import Path
 import numpy as np
@@ -46,6 +47,10 @@ def read_data(path: Path):
 
 def train_local_GPT(tokens_tensor, lr, epoches, B, T, vocab, verbose=False):
     m = GPT(vocab=vocab, d_model=128, n_heads=4, n_blocks=2, context=64)
+
+    for block in m.blocks:
+        assert block.mha.Wo.weight.requires_grad is False
+
     optimizer = SGD(m.parameters(), lr=lr)
     training_loss_history = []
     validation_loss_history = []
@@ -66,6 +71,12 @@ def train_local_GPT(tokens_tensor, lr, epoches, B, T, vocab, verbose=False):
             loss = F.cross_entropy(y_pred.permute(0, 2, 1), y)
             training_loss_history.append(loss.item())
             loss.backward()
+            for block in m.blocks:
+                assert block.mha.Wo.weight.grad is None
+                assert (
+                    block.mha.a_LoRA.weight.grad is not None
+                    and block.mha.b_LoRA.weight.grad is not None
+                )
             optimizer.step()
             if verbose:
                 print(f"loss per batch {b}: {training_loss_history[-1]}")

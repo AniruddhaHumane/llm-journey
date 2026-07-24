@@ -33,15 +33,22 @@ class AttnHead(nn.Module):
 
 
 class MultiHeadAttention(nn.Module):
-    def __init__(self, d_model, n_heads):
+    def __init__(self, d_model, n_heads, alpha=8):
         super().__init__()
         assert d_model % n_heads == 0, "d_model must be divisible by n_heads"
         self.heads = nn.ModuleList([AttnHead(d_model, d_model // n_heads) for _ in range(n_heads)])
         self.Wo = nn.Linear(d_model, d_model, bias=False)
+        # implementing LORA
+        self.alpha = alpha
+        self.lora_rank = 8
+        self.Wo.weight.requires_grad = False
+        self.a_LoRA = nn.Linear(self.Wo.in_features, self.lora_rank, bias=False)
+        self.b_LoRA = nn.Linear(self.lora_rank, self.Wo.out_features, bias=False)
+        nn.init.zeros_(self.b_LoRA.weight)
 
     def forward(self, x):
         heads = torch.cat([h(x) for h in self.heads], dim=-1)  # (B, T, d_model)
-        return self.Wo(heads)
+        return self.Wo(heads) + (self.alpha / self.lora_rank) * self.b_LoRA(self.a_LoRA(heads))
 
 
 class MLP(nn.Module):
@@ -57,10 +64,10 @@ class MLP(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, d_model, n_heads, d_ff=None):
+    def __init__(self, d_model, n_heads, d_ff=None, alpha=8):
         super().__init__()
         self.ln1 = nn.LayerNorm(d_model)  # learned gamma/beta now
-        self.mha = MultiHeadAttention(d_model, n_heads)
+        self.mha = MultiHeadAttention(d_model, n_heads, alpha)
         self.ln2 = nn.LayerNorm(d_model)
         self.mlp = MLP(d_model, d_ff)
 
@@ -71,11 +78,11 @@ class Block(nn.Module):
 
 
 class GPT(nn.Module):
-    def __init__(self, vocab, d_model, n_heads, n_blocks, context, d_ff=None):
+    def __init__(self, vocab, d_model, n_heads, n_blocks, context, d_ff=None, alpha=8):
         super().__init__()
         self.wte = nn.Embedding(vocab, d_model)  # token embeddings
         self.wpe = nn.Embedding(context, d_model)  # positional embeddings
-        self.blocks = nn.ModuleList([Block(d_model, n_heads, d_ff) for _ in range(n_blocks)])
+        self.blocks = nn.ModuleList([Block(d_model, n_heads, d_ff, alpha) for _ in range(n_blocks)])
         self.ln_f = nn.LayerNorm(d_model)  # final norm
         self.lm_head = nn.Linear(d_model, vocab, bias=False)
         self.lm_head.weight = self.wte.weight  # weight tying (same table both ends)
