@@ -1,0 +1,202 @@
+[
+    {
+        "prompt": "Capital of France:",
+        "completion": " Paris"
+    },
+    {
+        "prompt": "Capital of Japan:",
+        "completion": " Tokyo"
+    },
+    {
+        "prompt": "Capital of Germany:",
+        "completion": " Berlin"
+    },
+    {
+        "prompt": "Capital of Italy:",
+        "completion": " Rome"
+    },
+    {
+        "prompt": "Capital of Canada:",
+        "completion": " Ottawa"
+    },
+    {
+        "prompt": "Capital of Australia:",
+        "completion": " Canberra"
+    },
+    {
+        "prompt": "Capital of Spain:",
+        "completion": " Madrid"
+    },
+    {
+        "prompt": "Capital of China:",
+        "completion": " Beijing"
+    },
+    {
+        "prompt": "Capital of India:",
+        "completion": " New Delhi"
+    },
+    {
+        "prompt": "Capital of Brazil:",
+        "completion": " Brasília"
+    },
+    {
+        "prompt": "2 + 2 =",
+        "completion": " 4"
+    },
+    {
+        "prompt": "5 + 5 =",
+        "completion": " 10"
+    },
+    {
+        "prompt": "10 - 3 =",
+        "completion": " 7"
+    },
+    {
+        "prompt": "6 * 7 =",
+        "completion": " 42"
+    },
+    {
+        "prompt": "8 / 2 =",
+        "completion": " 4"
+    },
+    {
+        "prompt": "9 + 4 =",
+        "completion": " 13"
+    },
+    {
+        "prompt": "15 - 8 =",
+        "completion": " 7"
+    },
+    {
+        "prompt": "3 * 3 =",
+        "completion": " 9"
+    },
+    {
+        "prompt": "20 / 5 =",
+        "completion": " 4"
+    },
+    {
+        "prompt": "12 + 12 =",
+        "completion": " 24"
+    },
+    {
+        "prompt": "Opposite of hot:",
+        "completion": " cold"
+    },
+    {
+        "prompt": "Opposite of big:",
+        "completion": " small"
+    },
+    {
+        "prompt": "Opposite of fast:",
+        "completion": " slow"
+    },
+    {
+        "prompt": "Opposite of light:",
+        "completion": " dark"
+    },
+    {
+        "prompt": "Opposite of up:",
+        "completion": " down"
+    },
+    {
+        "prompt": "Opposite of happy:",
+        "completion": " sad"
+    },
+    {
+        "prompt": "Opposite of hard:",
+        "completion": " soft"
+    },
+    {
+        "prompt": "Opposite of early:",
+        "completion": " late"
+    },
+    {
+        "prompt": "Opposite of rich:",
+        "completion": " poor"
+    },
+    {
+        "prompt": "Opposite of inside:",
+        "completion": " outside"
+    },
+    {
+        "prompt": "Color of the sky on a clear day:",
+        "completion": " blue"
+    },
+    {
+        "prompt": "Color of grass:",
+        "completion": " green"
+    },
+    {
+        "prompt": "Color of a ripe banana:",
+        "completion": " yellow"
+    },
+    {
+        "prompt": "Color of snow:",
+        "completion": " white"
+    },
+    {
+        "prompt": "Color of coal:",
+        "completion": " black"
+    },
+    {
+        "prompt": "Largest ocean on Earth:",
+        "completion": " Pacific"
+    },
+    {
+        "prompt": "Chemical symbol for water:",
+        "completion": " H2O"
+    },
+    {
+        "prompt": "Chemical symbol for gold:",
+        "completion": " Au"
+    },
+    {
+        "prompt": "Chemical symbol for iron:",
+        "completion": " Fe"
+    },
+    {
+        "prompt": "Number of days in a non-leap year:",
+        "completion": " 365"
+    },
+    {
+        "prompt": "Number of legs on a spider:",
+        "completion": " 8"
+    },
+    {
+        "prompt": "Number of sides on a triangle:",
+        "completion": " 3"
+    },
+    {
+        "prompt": "Number of sides on a square:",
+        "completion": " 4"
+    },
+    {
+        "prompt": "Freezing point of water in Celsius:",
+        "completion": " 0"
+    },
+    {
+        "prompt": "Boiling point of water in Celsius:",
+        "completion": " 100"
+    },
+    {
+        "prompt": "The sun rises in the:",
+        "completion": " east"
+    },
+    {
+        "prompt": "The sun sets in the:",
+        "completion": " west"
+    },
+    {
+        "prompt": "Author of Romeo and Juliet:",
+        "completion": " Shakespeare"
+    },
+    {
+        "prompt": "Planet known as the Red Planet:",
+        "completion": " Mars"
+    },
+    {
+        "prompt": "Primary currency of the United States:",
+        "completion": " dollar"
+    }
+]

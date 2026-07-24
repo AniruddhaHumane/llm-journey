@@ -1,6 +1,7 @@
 # ── Python ──────────────────────────────────────────────
 __pycache__/
 *.py[cod]
+.omc/
 *$py.class
 *.so
 .Python
