@@ -176,21 +176,5 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
 processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-2B-Instruct")
 
 
-def toks_per_sec(model, processor, prompt, n_new=128):
-    # Specify text= explicitly so processor doesn't treat it as an image
-    ids = processor(text=prompt, return_tensors="pt").to(model.device)
-
-    # WARMUP
-    model.generate(**ids, max_new_tokens=8)
-    torch.cuda.synchronize()
-
-    t = time.time()
-    out = model.generate(**ids, max_new_tokens=n_new, do_sample=False)
-    torch.cuda.synchronize()
-
-    gen = out.shape[-1] - ids.input_ids.shape[-1]
-    return gen / (time.time() - t)
-
-
 print(toks_per_sec(model, processor, "Capital of france is "))
 print_model_vram(model, "Qwen3-VL (QLoRA)")

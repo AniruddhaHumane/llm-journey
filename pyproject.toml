@@ -5,22 +5,23 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "bitsandbytes>=0.50.0",
     "ipython>=9.15.0",
     "ipywidgets>=8.1.8",
-    "llmcompressor>=0.12.0",
+    "llmcompressor>=0.11.0",
     "notebook>=7.6.1",
     "numpy>=2.4.6",
     "pandas>=3.0.5",
     "peft>=0.19.1",
     "plotly>=6.9.0",
-    "torchvision>=0.27.0",
-    "trl<1.0",
-    "unsloth>=2025.7.2",
-    "unsloth-zoo>=2025.7.4",
+    "torch>=2.11.0",
+    "torchao>=0.17.0",
+    "torchvision>=0.26.0",
+    "transformers<=5.5.0",
+    "trl>=0.23.0",
+    "unsloth>=2025.11.1",
+    "unsloth-zoo>=2025.11.2",
+    "xformers>=0.0.35",
 ]
 
-[tool.uv.sources]
-torch = [
-  { index = "pytorch-cuda" }
-]
+[[tool.uv.index]]
+url = "https://download.pytorch.org/whl/cu130"
