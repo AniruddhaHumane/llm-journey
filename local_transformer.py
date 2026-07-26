@@ -58,7 +58,9 @@ class AttnHead:
 
         if not cache:
             # still prefill phase need token mask
-            mask = np.triu(np.ones_like(scores, bool), k=1)  # True above diagonal = future
+            mask = np.triu(
+                np.ones_like(scores, bool), k=1
+            )  # True above diagonal = future
             scores = np.where(mask, -np.inf, scores)  # causal mask
 
         return softmax(scores) @ self.V  # (T, d_head)
@@ -71,7 +73,9 @@ class MultiHeadAttention:
         self.Wo = np.random.randn(d_model, d_model) / np.sqrt(d_model)
 
     def __call__(self, X, cache=True):
-        return np.concatenate([h(X, cache) for h in self.heads], axis=-1) @ self.Wo  # (T, d_model)
+        return (
+            np.concatenate([h(X, cache) for h in self.heads], axis=-1) @ self.Wo
+        )  # (T, d_model)
 
 
 # ---------- feed-forward ----------
@@ -104,7 +108,9 @@ class GPT:
         self.wpe = np.random.randn(context, d_model) * 0.02  # positional embeddings
         self.blocks = [Block(d_model, n_heads, d_ff) for _ in range(n_blocks)]
 
-    def __call__(self, token_ids, cache=True, start_pos=0):  # token_ids: list[int], length T
+    def __call__(
+        self, token_ids, cache=True, start_pos=0
+    ):  # token_ids: list[int], length T
         T = len(token_ids)
         h = (
             self.wte[token_ids] + self.wpe[start_pos : start_pos + T]

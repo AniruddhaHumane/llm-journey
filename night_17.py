@@ -11,7 +11,9 @@ y_fp32 = layer(X)
 int8_scale = (2**8) - 1
 scale = (layer.weight.max() - layer.weight.min()) / int8_scale
 zero_point = torch.clip((-layer.weight.min() / scale).round(), 0, int8_scale)
-int8_w = torch.clip((torch.round(layer.weight / scale) + zero_point), 0, int8_scale).to(torch.uint8)
+int8_w = torch.clip((torch.round(layer.weight / scale) + zero_point), 0, int8_scale).to(
+    torch.uint8
+)
 
 # dequantizing it for inference
 dequant_w = ((int8_w - zero_point) * scale).to(torch.float32)
@@ -26,7 +28,9 @@ print(
 # Symmetric quantization
 scale = layer.weight.abs().max() / 127
 zero_point = 0  # doesn't change
-signed_int8_w = torch.clip((torch.round(layer.weight / scale)), -128, 127).to(torch.int8)
+signed_int8_w = torch.clip((torch.round(layer.weight / scale)), -128, 127).to(
+    torch.int8
+)
 signed_dequant_w = (signed_int8_w * scale).to(torch.float32)
 y_fp32_dquant = X @ signed_dequant_w.T + layer.bias
 
@@ -34,7 +38,9 @@ print((abs(y_fp32 - y_fp32_dquant)).mean(), abs(y_fp32 - y_fp32_dquant).max())
 print(
     f"total memory consumption for fp32: {layer.weight.nelement() * layer.weight.element_size()} bytes"
 )
-print(f"total memory consumption for int8: {int8_w.nelement() * int8_w.element_size()} bytes")
+print(
+    f"total memory consumption for int8: {int8_w.nelement() * int8_w.element_size()} bytes"
+)
 print(
     f"total savings: {layer.weight.nelement() * layer.weight.element_size() / (int8_w.nelement() * int8_w.element_size())}x"
 )

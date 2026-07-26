@@ -21,7 +21,9 @@ class AttnHead(nn.Module):
 
         T = x.size(1)
         # GPU FIX: explicitly create the mask on x.device
-        mask = torch.triu(torch.ones(T, T, dtype=torch.bool, device=x.device), diagonal=1)
+        mask = torch.triu(
+            torch.ones(T, T, dtype=torch.bool, device=x.device), diagonal=1
+        )
         scores = scores.masked_fill(mask, float("-inf"))
         attn = F.softmax(scores, dim=-1)
         return attn @ V  # (B, T, d_head)
@@ -31,7 +33,9 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, d_model, n_heads, lora_rank=8, alpha=8):
         super().__init__()
         assert d_model % n_heads == 0, "d_model must be divisible by n_heads"
-        self.heads = nn.ModuleList([AttnHead(d_model, d_model // n_heads) for _ in range(n_heads)])
+        self.heads = nn.ModuleList(
+            [AttnHead(d_model, d_model // n_heads) for _ in range(n_heads)]
+        )
         self.Wo = nn.Linear(d_model, d_model, bias=False)
 
         # LoRA Configuration
@@ -70,7 +74,9 @@ class Block(nn.Module):
     def __init__(self, d_model, n_heads, lora_rank=8, alpha=8, d_ff=None):
         super().__init__()
         self.ln1 = nn.LayerNorm(d_model)
-        self.mha = MultiHeadAttention(d_model, n_heads, lora_rank=lora_rank, alpha=alpha)
+        self.mha = MultiHeadAttention(
+            d_model, n_heads, lora_rank=lora_rank, alpha=alpha
+        )
         self.ln2 = nn.LayerNorm(d_model)
         self.mlp = MLP(d_model, d_ff)
 
@@ -81,7 +87,17 @@ class Block(nn.Module):
 
 
 class GPT(nn.Module):
-    def __init__(self, vocab, d_model, n_heads, n_blocks, context, lora_rank=8, alpha=8, d_ff=None):
+    def __init__(
+        self,
+        vocab,
+        d_model,
+        n_heads,
+        n_blocks,
+        context,
+        lora_rank=8,
+        alpha=8,
+        d_ff=None,
+    ):
         super().__init__()
         self.wte = nn.Embedding(vocab, d_model)
         self.wpe = nn.Embedding(context, d_model)
@@ -117,9 +133,9 @@ if __name__ == "__main__":
     torch.manual_seed(0)
 
     # 1. Instantiate Model and move to target device
-    model = GPT(vocab=50, d_model=32, n_heads=4, n_blocks=2, context=64, lora_rank=8, alpha=16).to(
-        device
-    )
+    model = GPT(
+        vocab=50, d_model=32, n_heads=4, n_blocks=2, context=64, lora_rank=8, alpha=16
+    ).to(device)
 
     # 2. Create Input Tensor and move to target device
     idx = torch.randint(0, 50, (2, 10), device=device)

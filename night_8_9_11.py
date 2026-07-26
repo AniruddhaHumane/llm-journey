@@ -10,7 +10,9 @@ import plotly.graph_objects as go
 import json
 
 
-def plot_loss_curves(results: dict[str, list[float]], filename: str = "realtime_losses.html"):
+def plot_loss_curves(
+    results: dict[str, list[float]], filename: str = "realtime_losses.html"
+):
     fig = go.Figure()
 
     for lr_label, losses in results.items():
@@ -46,10 +48,26 @@ def read_data(path: Path):
 
 
 def train_local_GPT(
-    model_weights, tokens_tensor, lr, epoches, B, T, vocab, rank, alpha, device, verbose=False
+    model_weights,
+    tokens_tensor,
+    lr,
+    epoches,
+    B,
+    T,
+    vocab,
+    rank,
+    alpha,
+    device,
+    verbose=False,
 ):
     m = GPT(
-        vocab=vocab, d_model=128, n_heads=4, n_blocks=2, context=64, lora_rank=rank, alpha=alpha
+        vocab=vocab,
+        d_model=128,
+        n_heads=4,
+        n_blocks=2,
+        context=64,
+        lora_rank=rank,
+        alpha=alpha,
     )
     if model_weights:
         m.load_state_dict(model_weights, strict=False if rank > 0 else True)

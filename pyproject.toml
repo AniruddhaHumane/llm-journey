@@ -15,6 +15,9 @@ dependencies = [
     "peft>=0.19.1",
     "plotly>=6.9.0",
     "torchvision>=0.27.0",
+    "trl<1.0",
+    "unsloth>=2025.7.2",
+    "unsloth-zoo>=2025.7.4",
 ]
 
 [tool.uv.sources]

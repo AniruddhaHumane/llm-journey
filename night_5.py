@@ -32,6 +32,8 @@ if __name__ == "__main__":
     p = 0.5
     order = np.argsort(new_token)[::-1]
     cum = np.cumsum(softmax(new_token[order]))
-    keep = order[: np.searchsorted(cum, p) + 1]  # +1 includes the crossing token; never empty
+    keep = order[
+        : np.searchsorted(cum, p) + 1
+    ]  # +1 includes the crossing token; never empty
     token = keep[np.random.choice(len(keep), p=softmax(new_token[keep]))]
     print(f"top-p: {token}")

@@ -110,4 +110,4 @@ Thumbs.db
 terraform.rc
 
 # -- data --
-data/
+data

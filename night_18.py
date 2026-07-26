@@ -5,6 +5,8 @@ from transformers import (
 )
 from bitsandbytes.nn import Linear4bit
 from peft import get_peft_model, LoraConfig
+from peft.tuners.lora import LoraLayer
+
 
 model_id = "Qwen/Qwen3-VL-2B-Instruct"
 
@@ -81,9 +83,8 @@ lora_model = get_peft_model(
     lora_config,
     autocast_adapter_dtype=False,
 )
-print(f"lora trainable parameters: {lora_model.print_trainable_parameters()}")
+lora_model.print_trainable_parameters()
 
-from peft.tuners.lora import LoraLayer
 
 # Extract and display the first 4 LoRA-adapted quantized layers
 target_count = 4
