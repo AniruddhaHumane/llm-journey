@@ -5,6 +5,8 @@ from datasets import Dataset
 from rich.console import Console
 from rich.table import Table
 from rich import box
+from PIL import Image
+
 
 with open("./data/schema.json", "r") as f:
     schema = json.load(f)
@@ -30,7 +32,7 @@ Always format your output as valid JSON containing the following fields:
 
 """.strip()
 
-USER_PROMPT = f"""Analyze this fashion image and extract the garment details. Return a JSON object containing {"', '".join(schema["fields"])}"""
+USER_PROMPT = f"""Analyze this fashion image and extract the garment details. Return a JSON object containing '{"', '".join(schema["fields"])}'"""
 
 images = list(Path("./data/images/test").glob("*.jpg"))
 
@@ -202,3 +204,36 @@ def build_dataset(
 # fit is normal like distribtion with majority being regular
 # length is again normal like with majority being mini
 # category as expected is dress dominant
+
+
+def lazy_load_batch(batch):
+    messages_col = batch["messages"]
+
+    # If first element is a dict (a turn), it's a single conversation (e.g. dataset[0])
+    if len(messages_col) > 0 and isinstance(messages_col[0], dict):
+        conversations = [messages_col]
+        is_single = True
+    else:
+        conversations = messages_col
+        is_single = False
+
+    processed_conversations = []
+    for conversation in conversations:
+        new_conversation = []
+        for turn in conversation:
+            new_contents = []
+            for item in turn["content"]:
+                # Open string path as PIL.Image on the fly
+                if item.get("type") == "image" and isinstance(item.get("image"), str):
+                    img = Image.open(item["image"]).convert("RGB")
+                    new_contents.append({"type": "image", "image": img})
+                else:
+                    new_contents.append(
+                        {k: v for k, v in item.items() if v is not None}
+                    )  # ← drop image:None
+            new_conversation.append({"role": turn["role"], "content": new_contents})
+        processed_conversations.append(new_conversation)
+
+    if is_single:
+        return {"messages": processed_conversations[0]}
+    return {"messages": processed_conversations}
