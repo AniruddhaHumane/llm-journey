@@ -52,26 +52,56 @@ train_dataset, val_dataset, test_dataset = build_dataset(verbose=False)
 train_dataset = train_dataset.with_transform(lazy_load_batch)
 val_dataset = val_dataset.with_transform(lazy_load_batch)
 
+# args = SFTConfig(
+#     output_dir="./results",
+#     max_length=2048,  # based on token analysis
+#     # --- training and validation ---
+#     # num_train_epochs=1,
+#     max_steps=1,
+#     per_device_train_batch_size=1,
+#     per_device_eval_batch_size=1,
+#     gradient_accumulation_steps=1,
+#     # --- Loss & Metrics Logging ---
+#     logging_steps=1,  # Log training loss every 10 steps
+#     eval_strategy="steps",  # Run evaluation periodically
+#     eval_steps=1,  # Evaluate loss on validation set every 50 steps
+#     save_strategy="steps",  # Save model checkpoints
+#     save_steps=1,
+#     # ---- dataset preprocessing
+#     remove_unused_columns=False,
+#     dataset_text_field="",
+#     dataset_kwargs={"skip_prepare_dataset": True},  # <--- Fixes transform loss
+# )
+
+# config for training
 args = SFTConfig(
     output_dir="./results",
-    max_length=2048,  # based on token analysis
-    # --- training and validation ---
-    # num_train_epochs=1,
-    max_steps=1,
-    per_device_train_batch_size=1,
-    per_device_eval_batch_size=1,
-    gradient_accumulation_steps=1,
+    max_length=2048,  # Based on token analysis
+    # --- Training Epochs & Batching ---
+    num_train_epochs=3,  # Run for full passes over training dataset
+    max_steps=-1,  # Disabled (-1 lets num_train_epochs control training duration)
+    per_device_train_batch_size=4,  # Adjust based on GPU VRAM (4 or 2)
+    per_device_eval_batch_size=4,
+    gradient_accumulation_steps=4,  # Effective batch size = 4 * 4 = 16
+    # --- Learning Rate & Optimizer ---
+    learning_rate=2e-4,  # Standard learning rate for LoRA/QLoRA
+    lr_scheduler_type="cosine",
+    warmup_ratio=0.03,
+    weight_decay=0.01,
+    bf16=True,  # Set to fp16=True if Ampere GPU (A100/3090/4090) is not available
     # --- Loss & Metrics Logging ---
-    logging_steps=1,  # Log training loss every 10 steps
-    eval_strategy="steps",  # Run evaluation periodically
-    eval_steps=1,  # Evaluate loss on validation set every 50 steps
-    save_strategy="steps",  # Save model checkpoints
-    save_steps=1,
-    # ---- dataset preprocessing
+    logging_steps=10,  # Log metrics every 10 steps
+    eval_strategy="epoch",  # Run evaluation at the end of every epoch
+    save_strategy="epoch",  # Save checkpoint at the end of every epoch
+    save_total_limit=2,  # Keep only the last 2 checkpoints to conserve disk space
+    load_best_model_at_end=True,  # Load the best performing checkpoint after training
+    metric_for_best_model="eval_loss",
+    # --- Dataset Preprocessing ---
     remove_unused_columns=False,
     dataset_text_field="",
-    dataset_kwargs={"skip_prepare_dataset": True},  # <--- Fixes transform loss
+    dataset_kwargs={"skip_prepare_dataset": True},  # Keeps custom vision transforms
 )
+
 trainer = SFTTrainer(
     fv_model,
     train_dataset=train_dataset,
